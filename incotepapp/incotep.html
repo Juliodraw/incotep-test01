@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulário de campo para protensão</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: url('https://www.tutorialcursos.com/product_images/p/412/cortinas-atirantadas__59957_zoom.jpg.webp') repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+.container {
+  width: 90%; /* Alterei para 90% */
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.field-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.field-container label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  width: 20%;
+  text-align: center;
+}
+
+.field-container input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 15%;
+}
+
+.results {
+  border-top: 1px solid #ccc;
+  padding-top: 20px;
+}
+
+.results label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.results span {
+  font-weight: bold;
+}
+
+#tabela-dados-ensaio { /* Adicionada a regra CSS para o ID "tabela-dados-ensaio" */
+  width: 70%;
+}
+
+.sheet {
+  border-collapse: collapse;
+  width: 70%;
+  margin-top: 20px;
+}
+
+.sheet th, .sheet td {
+  border: 1px solid #ccc;
+  padding: 5px;
+  width: 20%;
+  text-align: center;
+}
+
+.sheet th {
+  background-color: #EAE6E4;
+}
+
+.sheet td {
+  background-color: #A7A5A5;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto;
+  width: 300px;
+  height: auto;
+  margin-top: 20px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<img src="https://incotep.com.br/wp-content/uploads/2022/06/incotep-logo-cor.png" alt="Incotep Logo" class="logo">
+<div class="header">
+<p>Formulário de campo para protensão</p>
+<p>Ensaio de Recebimento - Tipo A (Permanente)</p>
+</div>
+<div class="field-container">
+<label for="date">Data de preenchimento:</label>
+<input type="date" id="date" value="">
+</div>
+<div class="field-container">
+<label for="tf">Carga de trabalho (Tf):</label>
+<input type="number" id="tf" value="">
+</div>
+<div class="field-container">
+<label for="area">Área do cilindro (cm2):</label>
+<input type="number" id="area" value="">
+</div>
+<div class="field-container">
+<label for="comprimento-livre">Comprimento do Tirante - Trecho Livre (m):</label>
+<input type="number" id="comprimento-livre" value="">
+</div>
+<div class="field-container">
+<label for="comprimento-ancorado">Comprimento do Tirante - Trecho Ancorado (m):</label>
+<input type="number" id="comprimento-ancorado" value="">
+</div>
+<div class="field-container">
+<label for="secao-tirante">Seção do tirante (mm2):</label>
+<input type="number" id="secao-tirante" value="">
+</div>
+<div class="field-container">
+<label for="modulo-elasticidade">Módulo de Elasticidade (kgf/mm2):</label>
+<input type="number" id="modulo-elasticidade" value="">
+</div>
+<div class="results">
+<label for="carga-trabalho">Carga de trabalho:</label>
+<span id="carga-trabalho"></span>
+<label for="carga-ensaio">Carga de Ensaio (tf):</label>
+<span id="carga-ensaio"></span>
+</div>
+<button onclick="calcular()">Atualizar cálculo geral</button>
+<table class="sheet" id="tabela-dados-ensaio"> <!-- Adicionado o ID "tabela-dados-ensaio" -->
+<thead>
+<tr>
+<th>Ciclo</th>
+<th>Base (tf)</th>
+<th>Pressão Manômetro (Kgf/cm2)</th>
+<th>Pressão aplicada (Kgf/cm2)</th>
+<th>Carga Aplicada (tf)</th>
+<th>Leitura (mm)</th>
+<th>Δ (mm)</th>
+<th>Desloc. (mm)</th>
+<th>Atualizar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fo</td>
+<td><input type="number" value="" id="base1"></td>
+<td><input type="number" value="" id="carga1"></td>
+<td><input type="number" value="" id="pressao-aplicada1"></td>
+<td><input type="number" value="" id="cargaReal1"></td>
+<td><input type="number" value="" id="leitura1"></td>
+<td><input type="number" value="0" id="delta1" readonly></td>
+<td><input type="number" value="" id="deslocamento1"></td>
+<td><button onclick="atualizar(1)">Atualizar</button></td>
+</tr>
+<tr>
+<td>0,3</td>
+<td><input type="number" value="" id="base2"></td>
+<td><input type="number" value="" id="carga2"></td>
+<td><input type="number" value="" id="pressao-aplicada2"></td>
+<td><input type="number" value="" id="cargaReal2"></td>
+<td><input type="number" value="" id="leitura2"></td>
+<td><input type="number" value="" id="delta2"></td>
+<td><input type="number" value="" id="deslocamento2"></td>
+<td><button onclick="atualizar(2)">Atualizar</button></td>
+</tr>
+<tr>
+<td>0,6</td>
+<td><input type="number" value="" id="base3"></td>
+<td><input type="number" value="" id="carga3"></td>
+<td><input type="number" value="" id="pressao-aplicada3"></td>
+<td><input type="number" value="" id="cargaReal3"></td>
+<td><input type="number" value="" id="leitura3"></td>
+<td><input type="number" value="" id="delta3"></td>
+<td><input type="number" value="" id="deslocamento3"></td>
+<td><button onclick="atualizar(3)">Atualizar</button></td>
+</tr>
+<tr>
+<td>0,8</td>
+<td><input type="number" value="" id="base4"></td>
+<td><input type="number" value="" id="carga4"></td>
+<td><input type="number" value="" id="pressao-aplicada4"></td>
+<td><input type="number" value="" id="cargaReal4"></td>
+<td><input type="number" value="" id="leitura4"></td>
+<td><input type="number" value="" id="delta4"></td>
+<td><input type="number" value="" id="deslocamento4"></td>
+<td><button onclick="atualizar(4)">Atualizar</button></td>
+</tr>
+<tr>
+<td>1,0</td>
+<td><input type="number" value="" id="base5"></td>
+<td><input type="number" value="" id="carga5"></td>
+<td><input type="number" value="" id="pressao-aplicada5"></td>
+<td><input type="number" value="" id="cargaReal5"></td>
+<td><input type="number" value="" id="leitura5"></td>
+<td><input type="number" value="" id="delta5"></td>
+<td><input type="number" value="" id="deslocamento5"></td>
+<td><button onclick="atualizar(5)">Atualizar</button></td>
+</tr>
+<tr>
+<td>1,2</td>
+<td><input type="number" value="" id="base6"></td>
+<td><input type="number" value="" id="carga6"></td>
+<td><input type="number" value="" id="pressao-aplicada6"></td>
+<td><input type="number" value="" id="cargaReal6"></td>
+<td><input type="number" value="" id="leitura6"></td>
+<td><input type="number" value="" id="delta6"></td>
+<td><input type="number" value="" id="deslocamento6"></td>
+<td><button onclick="atualizar(6)">Atualizar</button></td>
+</tr>
+<tr>
+<td>1,4</td>
+<td><input type="number" value="" id="base7"></td>
+<td><input type="number" value="" id="carga7"></td>
+<td><input type="number" value="" id="pressao-aplicada7"></td>
+<td><input type="number" value="" id="cargaReal7"></td>
+<td><input type="number" value="" id="leitura7"></td>
+<td><input type="number" value="" id="delta7"></td>
+<td><input type="number" value="" id="deslocamento7"></td>
+<td><button onclick="atualizar(7)">Atualizar</button></td>
+</tr>
+<tr>
+<td>1,6</td>
+<td><input type="number" value="" id="base8"></td>
+<td><input type="number" value="" id="carga8"></td>
+<td><input type="number" value="" id="pressao-aplicada8"></td>
+<td><input type="number" value="" id="cargaReal8"></td>
+<td><input type="number" value="" id="leitura8"></td>
+<td><input type="number" value="" id="delta8"></td>
+<td><input type="number" value="" id="deslocamento8"></td>
+<td><button onclick="atualizar(8)">Atualizar</button></td>
+</tr>
+<tr>
+<td>1,75</td>
+<td><input type="number" value="" id="base9"></td>
+<td><input type="number" value="" id="carga9"></td>
+<td><input type="number" value="" id="pressao-aplicada9"></td>
+<td><input type="number" value="" id="cargaReal9"></td>
+<td><input type="number" value="" id="leitura9"></td>
+<td><input type="number" value="" id="delta9"></td>
+<td><input type="number" value="" id="deslocamento9"></td>
+<td><button onclick="atualizar(9)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D 1,6</td>
+  <td><input type="number" value="" id="base10"></td>
+  <td><input type="number" value="" id="carga10"></td>
+  <td><input type="number" value="" id="pressao-aplicada10"></td>
+  <td><input type="number" value="" id="cargaReal10"></td>
+  <td><input type="number" value="" id="leitura10"></td>
+  <td><input type="number" value="" id="delta10"></td>
+  <td><input type="number" value="" id="deslocamento10"></td>
+  <td><button onclick="atualizar(10)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D 1,4</td>
+  <td><input type="number" value="" id="base11"></td>
+  <td><input type="number" value="" id="carga11"></td>
+  <td><input type="number" value="" id="pressao-aplicada11"></td>
+  <td><input type="number" value="" id="cargaReal11"></td>
+  <td><input type="number" value="" id="leitura11"></td>
+  <td><input type="number" value="" id="delta11"></td>
+  <td><input type="number" value="" id="deslocamento11"></td>
+  <td><button onclick="atualizar(11)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D 1,2</td>
+  <td><input type="number" value="" id="base12"></td>
+  <td><input type="number" value="" id="carga12"></td>
+  <td><input type="number" value="" id="pressao-aplicada12"></td>
+  <td><input type="number" value="" id="cargaReal12"></td>
+  <td><input type="number" value="" id="leitura12"></td>
+  <td><input type="number" value="" id="delta12"></td>
+  <td><input type="number" value="" id="deslocamento12"></td>
+  <td><button onclick="atualizar(12)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D 1,0</td>
+  <td><input type="number" value="" id="base13"></td>
+  <td><input type="number" value="" id="carga13"></td>
+  <td><input type="number" value="" id="pressao-aplicada13"></td>
+  <td><input type="number" value="" id="cargaReal13"></td>
+  <td><input type="number" value="" id="leitura13"></td>
+  <td><input type="number" value="" id="delta13"></td>
+  <td><input type="number" value="" id="deslocamento13"></td>
+  <td><button onclick="atualizar(13)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D 0,8</td>
+  <td><input type="number" value="" id="base14"></td>
+  <td><input type="number" value="" id="carga14"></td>
+  <td><input type="number" value="" id="pressao-aplicada14"></td>
+  <td><input type="number" value="" id="cargaReal14"></td>
+  <td><input type="number" value="" id="leitura14"></td>
+  <td><input type="number" value="" id="delta14"></td>
+  <td><input type="number" value="" id="deslocamento14"></td>
+  <td><button onclick="atualizar(14)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D 0,6</td>
+  <td><input type="number" value="" id="base15"></td>
+  <td><input type="number" value="" id="carga15"></td>
+  <td><input type="number" value="" id="pressao-aplicada15"></td>
+  <td><input type="number" value="" id="cargaReal15"></td>
+  <td><input type="number" value="" id="leitura15"></td>
+  <td><input type="number" value="" id="delta15"></td>
+  <td><input type="number" value="" id="deslocamento15"></td>
+  <td><button onclick="atualizar(15)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D 0,3</td>
+  <td><input type="number" value="" id="base16"></td>
+  <td><input type="number" value="" id="carga16"></td>
+  <td><input type="number" value="" id="pressao-aplicada16"></td>
+  <td><input type="number" value="" id="cargaReal16"></td>
+  <td><input type="number" value="" id="leitura16"></td>
+  <td><input type="number" value="" id="delta16"></td>
+  <td><input type="number" value="" id="deslocamento16"></td>
+  <td><button onclick="atualizar(16)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>D F0</td>
+  <td><input type="number" value="" id="base17"></td>
+  <td><input type="number" value="" id="carga17"></td>
+  <td><input type="number" value="" id="pressao-aplicada17"></td>
+  <td><input type="number" value="" id="cargaReal17"></td>
+  <td><input type="number" value="" id="leitura17"></td>
+  <td><input type="number" value="" id="delta17"></td>
+  <td><input type="number" value="" id="deslocamento17"></td>
+  <td><button onclick="atualizar(17)">Atualizar</button></td>
+</tr>
+<tr>
+  <td>INC 1,0</td>
+  <td><input type="number" value="" id="base18"></td>
+  <td><input type="number" value="" id="carga18"></td>
+  <td><input type="number" value="" id="pressao-aplicada18"></td>
+  <td><input type="number" value="" id="cargaReal18"></td>
+  <td><input type="number" value="" id="leitura18"></td>
+  <td><input type="number" value="" id="delta18"></td>
+  <td><input type="number" value="" id="deslocamento18"></td>
+  <td><button onclick="atualizar(18)">Atualizar</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<button onclick="gerarGrafico()">Gerar Gráfico Carga x Desl.</button>
+<div id="grafico" style="width: 90%; height: 400px;"></div>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+function calcular() {
+const tf = parseFloat(document.getElementById('tf').value);
+const area = parseFloat(document.getElementById('area').value);
+const comprimentoLivre = parseFloat(document.getElementById('comprimento-livre').value);
+const comprimentoAncorado = parseFloat(document.getElementById('comprimento-ancorado').value);
+const secaoTirante = parseFloat(document.getElementById('secao-tirante').value);
+const moduloElasticidade = parseFloat(document.getElementById('modulo-elasticidade').value);
+ 
+const cargaTrabalho = tf;
+const cargaEnsaio = cargaTrabalho * 1.75;
+ 
+document.getElementById('carga-trabalho').textContent = cargaTrabalho.toFixed(2);
+document.getElementById('carga-ensaio').textContent = cargaEnsaio.toFixed(2);
+ 
+const cargaEnsaio0 = cargaEnsaio * 0.1;
+const cargaTrabalho03 = cargaTrabalho * 0.3;
+const cargaTrabalho06 = cargaTrabalho * 0.6;
+const cargaTrabalho08 = cargaTrabalho * 0.8;
+const cargaTrabalho10 = cargaTrabalho * 1.0;
+const cargaTrabalho12 = cargaTrabalho * 1.2;
+const cargaTrabalho14 = cargaTrabalho * 1.4;
+const cargaTrabalho16 = cargaTrabalho * 1.6;
+const cargaTrabalho175 = cargaTrabalho * 1.75;
+ 
+document.getElementById('base1').value = cargaEnsaio0.toFixed(2);
+document.getElementById('carga1').value = Math.ceil(cargaEnsaio0/area*1000);
+document.getElementById('pressao-aplicada1').value = Math.ceil(cargaEnsaio0/area*1000);
+document.getElementById('cargaReal1').value = '';
+document.getElementById('leitura1').value = '';
+document.getElementById('delta1').value = '0';
+document.getElementById('deslocamento1').value = '';
+ 
+document.getElementById('base2').value = cargaTrabalho03.toFixed(2);
+document.getElementById('carga2').value = Math.ceil(cargaTrabalho03/area*1000);
+document.getElementById('pressao-aplicada2').value = Math.ceil(cargaTrabalho03/area*1000);
+document.getElementById('cargaReal2').value = '';
+document.getElementById('leitura2').value = '';
+document.getElementById('delta2').value = '0';
+document.getElementById('deslocamento2').value = '';
+ 
+document.getElementById('base3').value = cargaTrabalho06.toFixed(2);
+document.getElementById('carga3').value = Math.ceil(cargaTrabalho06/area*1000);
+document.getElementById('pressao-aplicada3').value = Math.ceil(cargaTrabalho06/area*1000);
+document.getElementById('cargaReal3').value = '';
+document.getElementById('leitura3').value = '';
+document.getElementById('delta3').value = '0';
+document.getElementById('deslocamento3').value = '';
+ 
+document.getElementById('base4').value = cargaTrabalho08.toFixed(2);
+document.getElementById('carga4').value = Math.ceil(cargaTrabalho08/area*1000);
+document.getElementById('pressao-aplicada4').value = Math.ceil(cargaTrabalho08/area*1000);
+document.getElementById('cargaReal4').value = '';
+document.getElementById('leitura4').value = '';
+document.getElementById('delta4').value = '0';
+document.getElementById('deslocamento4').value = '';
+ 
+document.getElementById('base5').value = cargaTrabalho10.toFixed(2);
+document.getElementById('carga5').value = Math.ceil(cargaTrabalho10/area*1000);
+document.getElementById('pressao-aplicada5').value = Math.ceil(cargaTrabalho10/area*1000);
+document.getElementById('cargaReal5').value = '';
+document.getElementById('leitura5').value = '';
+document.getElementById('delta5').value = '0';
+document.getElementById('deslocamento5').value = '';
+ 
+document.getElementById('base6').value = cargaTrabalho12.toFixed(2);
+document.getElementById('carga6').value = Math.ceil(cargaTrabalho12/area*1000);
+document.getElementById('pressao-aplicada6').value = Math.ceil(cargaTrabalho12/area*1000);
+document.getElementById('cargaReal6').value = '';
+document.getElementById('leitura6').value = '';
+document.getElementById('delta6').value = '0';
+document.getElementById('deslocamento6').value = '';
+ 
+document.getElementById('base7').value = cargaTrabalho14.toFixed(2);
+document.getElementById('carga7').value = Math.ceil(cargaTrabalho14/area*1000);
+document.getElementById('pressao-aplicada7').value = Math.ceil(cargaTrabalho14/area*1000);
+document.getElementById('cargaReal7').value = '';
+document.getElementById('leitura7').value = '';
+document.getElementById('delta7').value = '0';
+document.getElementById('deslocamento7').value = '';
+ 
+document.getElementById('base8').value = cargaTrabalho16.toFixed(2);
+document.getElementById('carga8').value = Math.ceil(cargaTrabalho16/area*1000);
+document.getElementById('pressao-aplicada8').value = Math.ceil(cargaTrabalho16/area*1000);
+document.getElementById('cargaReal8').value = '';
+document.getElementById('leitura8').value = '';
+document.getElementById('delta8').value = '0';
+document.getElementById('deslocamento8').value = '';
+ 
+document.getElementById('base9').value = cargaTrabalho175.toFixed(2);
+document.getElementById('carga9').value = Math.ceil(cargaTrabalho175/area*1000);
+document.getElementById('pressao-aplicada9').value = Math.ceil(cargaTrabalho175/area*1000);
+document.getElementById('cargaReal9').value = '';
+document.getElementById('leitura9').value = '';
+document.getElementById('delta9').value = '0';
+document.getElementById('deslocamento9').value = '';
+
+document.getElementById('base10').value = cargaTrabalho16.toFixed(2);
+document.getElementById('carga10').value = Math.ceil(cargaTrabalho16/area*1000);
+document.getElementById('pressao-aplicada10').value = Math.ceil(cargaTrabalho16/area*1000);
+document.getElementById('cargaReal10').value = '';
+document.getElementById('leitura10').value = '';
+document.getElementById('delta10').value = '0';
+document.getElementById('deslocamento10').value = '';
+
+document.getElementById('base11').value = cargaTrabalho14.toFixed(2);
+document.getElementById('carga11').value = Math.ceil(cargaTrabalho14/area*1000);
+document.getElementById('pressao-aplicada11').value = Math.ceil(cargaTrabalho14/area*1000);
+document.getElementById('cargaReal11').value = '';
+document.getElementById('leitura11').value = '';
+document.getElementById('delta11').value = '0';
+document.getElementById('deslocamento11').value = '';
+
+document.getElementById('base12').value = cargaTrabalho12.toFixed(2);
+document.getElementById('carga12').value = Math.ceil(cargaTrabalho12/area*1000);
+document.getElementById('pressao-aplicada12').value = Math.ceil(cargaTrabalho12/area*1000);
+document.getElementById('cargaReal12').value = '';
+document.getElementById('leitura12').value = '';
+document.getElementById('delta12').value = '0';
+document.getElementById('deslocamento12').value = '';
+
+document.getElementById('base13').value = cargaTrabalho10.toFixed(2);
+document.getElementById('carga13').value = Math.ceil(cargaTrabalho10/area*1000);
+document.getElementById('pressao-aplicada13').value = Math.ceil(cargaTrabalho10/area*1000);
+document.getElementById('cargaReal13').value = '';
+document.getElementById('leitura13').value = '';
+document.getElementById('delta13').value = '0';
+document.getElementById('deslocamento13').value = '';
+
+document.getElementById('base14').value = cargaTrabalho08.toFixed(2);
+document.getElementById('carga14').value = Math.ceil(cargaTrabalho08/area*1000);
+document.getElementById('pressao-aplicada14').value = Math.ceil(cargaTrabalho08/area*1000);
+document.getElementById('cargaReal14').value = '';
+document.getElementById('leitura14').value = '';
+document.getElementById('delta14').value = '0';
+document.getElementById('deslocamento14').value = '';
+
+document.getElementById('base15').value = cargaTrabalho06.toFixed(2);
+document.getElementById('carga15').value = Math.ceil(cargaTrabalho06/area*1000);
+document.getElementById('pressao-aplicada15').value = Math.ceil(cargaTrabalho06/area*1000);
+document.getElementById('cargaReal15').value = '';
+document.getElementById('leitura15').value = '';
+document.getElementById('delta15').value = '0';
+document.getElementById('deslocamento15').value = '';
+
+document.getElementById('base16').value = cargaTrabalho03.toFixed(2);
+document.getElementById('carga16').value = Math.ceil(cargaTrabalho03/area*1000);
+document.getElementById('pressao-aplicada16').value = Math.ceil(cargaTrabalho03/area*1000);
+document.getElementById('cargaReal16').value = '';
+document.getElementById('leitura16').value = '';
+document.getElementById('delta16').value = '0';
+document.getElementById('deslocamento16').value = '';
+
+document.getElementById('base17').value = cargaEnsaio0.toFixed(2);
+document.getElementById('carga17').value = Math.ceil(cargaEnsaio0/area*1000);
+document.getElementById('pressao-aplicada17').value = Math.ceil(cargaEnsaio0/area*1000);
+document.getElementById('cargaReal17').value = '';
+document.getElementById('leitura17').value = '';
+document.getElementById('delta17').value = '0';
+document.getElementById('deslocamento17').value = '';
+
+document.getElementById('base18').value = cargaTrabalho10.toFixed(2);
+document.getElementById('carga18').value = Math.ceil(cargaTrabalho10/area*1000);
+document.getElementById('pressao-aplicada18').value = Math.ceil(cargaTrabalho10/area*1000);
+document.getElementById('cargaReal18').value = '';
+document.getElementById('leitura18').value = '';
+document.getElementById('delta18').value = '0';
+document.getElementById('deslocamento18').value = '';
+}
+
+function atualizar(linha) {
+const pressaoAplicada = parseFloat(document.getElementById(pressao-aplicada${linha}).value);
+const area = parseFloat(document.getElementById('area').value);
+document.getElementById(cargaReal${linha}).value = (pressaoAplicada * area / 1000).toFixed(2);
+ 
+const leitura = parseFloat(document.getElementById(leitura${linha}).value);
+if (linha === 1) {
+document.getElementById(delta${linha}).value = 0;
+} else {
+const leituraAnterior = parseFloat(document.getElementById(leitura${linha - 1}).value);
+document.getElementById(delta${linha}).value = leitura - leituraAnterior;
+}
+ 
+let deslocamento = 0;
+for (let i = 1; i <= linha; i++) {
+deslocamento += parseFloat(document.getElementById(delta${i}).value);
+}
+document.getElementById(deslocamento${linha}).value = deslocamento.toFixed(2);
+}
+
+function gerarGrafico() {
+    const x = [];
+    const y = [];
+
+    for (let i = 1; i <= 18; i++) {
+        const deslocamento = parseFloat(document.getElementById(deslocamento${i}).value);
+        const cargaReal = parseFloat(document.getElementById(cargaReal${i}).value);
+
+        x.push(cargaReal);
+        y.push(deslocamento);
+    }
+
+    const data = [
+        {
+            x: x,
+            y: y,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: {color: 'Red', size: 10, line: {width: 2}},
+            name: 'Desloc. (mm)'
+        }
+    ];
+
+    const layout = {
+        title: 'Gráfico - Carga x Deslocamento',
+        xaxis: {
+            title: 'Carga Aplicada (tf)',
+           
+        },
+        yaxis: {
+            title: 'Desloc. (mm)',
+            autorange: 'reversed',
+        }
+    };
+
+    Plotly.newPlot('grafico', data, layout);
+}
+</script>
+</body>
+</html>
